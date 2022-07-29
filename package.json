@@ -44,7 +44,6 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/android": "^3.0.0",
     "@capacitor/core": "^3.0.0",
     "@capacitor/docgen": "^0.0.18",
     "@capacitor/ios": "^3.0.0",
@@ -74,5 +73,9 @@
     "android": {
       "src": "android"
     }
+  },
+  "dependencies": {
+    "@capacitor/android": "^4.0.0",
+    "docgen": "^0.0.1"
   }
 }
