@@ -48,7 +48,7 @@ class MockLocationChecker {
         }
         Log.i(TAG, "isMock: $isMock")
         Log.i(TAG, "msg: $msg")
-        Log.i(TAG,"indicated: $indicated")
+        Log.i(TAG, "indicated: $indicated")
         return CheckMockResult(isMock, msg, indicated)
     }
 
