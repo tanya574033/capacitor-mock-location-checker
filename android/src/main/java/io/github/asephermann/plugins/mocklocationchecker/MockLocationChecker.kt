@@ -1,5 +1,6 @@
 package io.github.asephermann.plugins.mocklocationchecker
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -69,16 +70,12 @@ class MockLocationChecker {
 
                 // Get Permissions
                 val requestedPermissions = packageInfo.requestedPermissions
-                if (requestedPermissions != null) {
-                    for (i in requestedPermissions.indices) {
-                        if ((requestedPermissions[i] == "android.permission.ACCESS_MOCK_LOCATION")
-                            && applicationInfo.packageName != activity.packageName
-                            && !whiteList.contains(applicationInfo.packageName)
-                        ) {
-                            count++
-                            indicated.put(applicationInfo.packageName)
-                        }
-                    }
+                if (requestedPermissions != null && requestedPermissions.contains("android.permission.ACCESS_MOCK_LOCATION")
+                    && applicationInfo.packageName != activity.packageName
+                    && !whiteList.contains(applicationInfo.packageName)
+                ) {
+                    count++
+                    indicated.put(applicationInfo.packageName)
                 }
             } catch (e: PackageManager.NameNotFoundException) {
                 Log.e(TAG, "Got exception " + e.message)
