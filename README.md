@@ -35,6 +35,12 @@ checkMock = async (whiteList: Array<string>) => {
     console.log('Is Mock Location: ', checkResult.isMock);
     console.log('Messages: ', checkResult.messages);
     console.log('Indicated Apps: ', checkResult.indicated.join("\n"));
+
+
+    // Open Detail Firts Indicated App
+    if (checkResult.indicated != null) {
+      await MockLocationChecker.goToMockLocationAppDetail({ packageName: checkResult.indicated[0] });
+    }
   };
 ```
 
