@@ -47,8 +47,7 @@ checkMock = async (whiteList: Array<string>) => {
 Add this to your app Manifest.xml
 
 ```xml
-<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
-    tools:ignore="QueryAllPackagesPermission" />
+<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 ```
 or,
 
