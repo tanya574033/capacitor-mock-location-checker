@@ -58,29 +58,62 @@ class MockLocationChecker {
         whiteList: ArrayList<String>
     ): Boolean {
         var count = 0
-        val pm = activity.packageManager
-        val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
-        indicated = JSONArray()
-        for (applicationInfo in packages) {
-            try {
-                val packageInfo = pm.getPackageInfo(
-                    applicationInfo.packageName,
-                    PackageManager.GET_PERMISSIONS
-                )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val hasPermission =
+                activity.checkSelfPermission(Manifest.permission.QUERY_ALL_PACKAGES) == PackageManager.PERMISSION_GRANTED
+            if (!hasPermission) {
+                activity.requestPermissions(arrayOf(Manifest.permission.QUERY_ALL_PACKAGES), 1)
+            } else {
+                val pm = activity.packageManager
+                val packages = pm.getInstalledPackages(PackageManager.GET_META_DATA)
+                indicated = JSONArray()
+                for (applicationInfo in packages) {
+                    try {
+                        val packageInfo = pm.getPackageInfo(
+                            applicationInfo.packageName,
+                            PackageManager.GET_PERMISSIONS
+                        )
 
-                // Get Permissions
-                val requestedPermissions = packageInfo.requestedPermissions
-                if (requestedPermissions != null && requestedPermissions.contains("android.permission.ACCESS_MOCK_LOCATION")
-                    && applicationInfo.packageName != activity.packageName
-                    && !whiteList.contains(applicationInfo.packageName)
-                ) {
-                    count++
-                    indicated.put(applicationInfo.packageName)
+                        // Get Permissions
+                        val requestedPermissions = packageInfo.requestedPermissions
+                        if (requestedPermissions != null && requestedPermissions.contains("android.permission.ACCESS_MOCK_LOCATION")
+                            && packageInfo.packageName != activity.packageName
+                            && !whiteList.contains(packageInfo.packageName)
+                        ) {
+                            count++
+                            indicated.put(packageInfo.packageName)
+                        }
+                    } catch (e: PackageManager.NameNotFoundException) {
+                        Log.e(TAG, "Got exception " + e.message)
+                    }
                 }
-            } catch (e: PackageManager.NameNotFoundException) {
-                Log.e(TAG, "Got exception " + e.message)
+            }
+        } else {
+            val pm = activity.packageManager
+            val packages = pm.getInstalledPackages(PackageManager.GET_META_DATA)
+            indicated = JSONArray()
+            for (applicationInfo in packages) {
+                try {
+                    val packageInfo = pm.getPackageInfo(
+                        applicationInfo.packageName,
+                        PackageManager.GET_PERMISSIONS
+                    )
+
+                    // Get Permissions
+                    val requestedPermissions = packageInfo.requestedPermissions
+                    if (requestedPermissions != null && requestedPermissions.contains("android.permission.ACCESS_MOCK_LOCATION")
+                        && packageInfo.packageName != activity.packageName
+                        && !whiteList.contains(packageInfo.packageName)
+                    ) {
+                        count++
+                        indicated.put(packageInfo.packageName)
+                    }
+                } catch (e: PackageManager.NameNotFoundException) {
+                    Log.e(TAG, "Got exception " + e.message)
+                }
             }
         }
+
         return count > 0
     }
 
