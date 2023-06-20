@@ -5,6 +5,8 @@ export interface MockLocationCheckerPlugin {
    */
   checkMock(options: { whiteList: Array<string> }): Promise<CheckMockResult>;
 
+  isLocationFromMockProvider(): Promise<Boolean>;
+
   /**
    * 
    * @param options {packageName: string}

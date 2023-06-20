@@ -60,6 +60,7 @@ or,
 <docgen-index>
 
 * [`checkMock(...)`](#checkmock)
+* [`isLocationFromMockProvider()`](#islocationfrommockprovider)
 * [`goToMockLocationAppDetail(...)`](#gotomocklocationappdetail)
 * [Interfaces](#interfaces)
 
@@ -79,6 +80,17 @@ checkMock(options: { whiteList: Array<string>; }) => Promise<CheckMockResult>
 | **`options`** | <code>{ whiteList: string[]; }</code> | : <a href="#array">Array</a>&lt;string&gt;} |
 
 **Returns:** <code>Promise&lt;<a href="#checkmockresult">CheckMockResult</a>&gt;</code>
+
+--------------------
+
+
+### isLocationFromMockProvider()
+
+```typescript
+isLocationFromMockProvider() => Promise<Boolean>
+```
+
+**Returns:** <code>Promise&lt;<a href="#boolean">Boolean</a>&gt;</code>
 
 --------------------
 
@@ -157,5 +169,12 @@ goToMockLocationAppDetail(options: { packageName: string; }) => Promise<void>
 | --------- | ------------------------------------------------------------------ |
 | **join**  | (separator?: string \| undefined) =&gt; string                     |
 | **slice** | (start?: number \| undefined, end?: number \| undefined) =&gt; T[] |
+
+
+#### Boolean
+
+| Method      | Signature        | Description                                          |
+| ----------- | ---------------- | ---------------------------------------------------- |
+| **valueOf** | () =&gt; boolean | Returns the primitive value of the specified object. |
 
 </docgen-api>

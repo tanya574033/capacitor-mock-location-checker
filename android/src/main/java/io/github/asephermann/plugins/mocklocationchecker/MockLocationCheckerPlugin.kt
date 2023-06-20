@@ -29,6 +29,16 @@ class MockLocationCheckerPlugin : Plugin() {
     }
 
     @PluginMethod
+    fun isLocationFromMockProvider(call: PluginCall)  {
+        val ret = JSObject()
+
+        val result = implementation.isLocationFromMockProvider(activity)
+
+        ret.put("value", result)
+        call.resolve(ret)
+    }
+
+    @PluginMethod
     fun goToMockLocationAppDetail(call: PluginCall)  {
         val packageName = call.getString("packageName")
 
