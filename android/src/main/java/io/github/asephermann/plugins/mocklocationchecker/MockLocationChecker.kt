@@ -17,6 +17,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import org.json.JSONArray
 import java.util.Locale
 
@@ -131,6 +132,7 @@ class MockLocationChecker {
 
     @SuppressLint("ObsoleteSdkInt")
     fun isLocationFromMockProvider(activity: Activity): Boolean {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
         if (Build.VERSION.SDK_INT >= 18) {
             if (isLocationEnabled(activity)) {
                 if (ActivityCompat.checkSelfPermission(
