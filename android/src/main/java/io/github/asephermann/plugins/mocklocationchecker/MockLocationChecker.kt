@@ -6,8 +6,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
@@ -19,7 +17,6 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.json.JSONArray
-import java.util.Locale
 
 
 const val TAG: String = "MockLocationChecker"
@@ -132,6 +129,7 @@ class MockLocationChecker {
 
     @SuppressLint("ObsoleteSdkInt")
     fun isLocationFromMockProvider(activity: Activity): Boolean {
+        var isFromMockProvider = false
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
         if (Build.VERSION.SDK_INT >= 18) {
             if (isLocationEnabled(activity)) {
@@ -150,9 +148,16 @@ class MockLocationChecker {
                     activity.startActivity(intent)
                     return false
                 }
-                val location: Location? =
-                    mFusedLocationClient.lastLocation.result
-                return location?.isFromMockProvider ?: false
+                mFusedLocationClient.lastLocation.addOnCompleteListener(activity) { task ->
+                    val location: Location? = task.result
+                    if (location != null) {
+                        try {
+                            isFromMockProvider = location.isFromMockProvider
+                        } catch (e: Exception) {
+                            Log.e("MockLocationChecker", e.toString())
+                        }
+                    }
+                }
             } else {
                 Toast.makeText(
                     activity.applicationContext,
@@ -169,6 +174,8 @@ class MockLocationChecker {
                 Settings.Secure.ALLOW_MOCK_LOCATION
             ) != "0"
         }
+
+        return isFromMockProvider
     }
 
     private fun isLocationEnabled(activity: Activity): Boolean {
