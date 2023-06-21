@@ -15,6 +15,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import org.json.JSONArray
 
@@ -131,6 +134,30 @@ class MockLocationChecker {
     fun isLocationFromMockProvider(activity: Activity): Boolean {
         var isFromMockProvider = false
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+        val locationRequest = LocationRequest.create().apply {
+            interval = 1000
+            fastestInterval = 500
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.lastLocation?.let { location ->
+                    try {
+                        isFromMockProvider = if (Build.VERSION.SDK_INT <= 30) {
+                            location.isFromMockProvider
+                        } else if (Build.VERSION.SDK_INT >= 31) {
+                            location.isMock
+                        } else {
+                            false
+                        }
+                    } catch (e: Exception) {
+                        Log.e("MockLocationChecker", e.toString())
+                    }
+                }
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= 18) {
             if (isLocationEnabled(activity)) {
                 if (ActivityCompat.checkSelfPermission(
@@ -148,16 +175,7 @@ class MockLocationChecker {
                     activity.startActivity(intent)
                     return false
                 }
-                mFusedLocationClient.lastLocation.addOnCompleteListener(activity) { task ->
-                    val location: Location? = task.result
-                    if (location != null) {
-                        try {
-                            isFromMockProvider = location.isFromMockProvider
-                        } catch (e: Exception) {
-                            Log.e("MockLocationChecker", e.toString())
-                        }
-                    }
-                }
+                mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
             } else {
                 Toast.makeText(
                     activity.applicationContext,
@@ -168,14 +186,13 @@ class MockLocationChecker {
                 activity.startActivity(intent)
                 return false
             }
+            return isFromMockProvider
         } else {
             return Settings.Secure.getString(
                 activity.applicationContext.contentResolver,
                 Settings.Secure.ALLOW_MOCK_LOCATION
             ) != "0"
         }
-
-        return isFromMockProvider
     }
 
     private fun isLocationEnabled(activity: Activity): Boolean {
