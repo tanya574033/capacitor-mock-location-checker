@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -112,10 +113,13 @@ class MockLocationChecker {
                         PackageManager.GET_PERMISSIONS
                     )
 
+                    val appInfo = pm.getApplicationInfo(applicationInfo.packageName,0)
+
                     // Get Permissions
                     val requestedPermissions = packageInfo.requestedPermissions
                     if (requestedPermissions != null && requestedPermissions.contains("android.permission.ACCESS_MOCK_LOCATION")
                         && packageInfo.packageName != activity.packageName
+                        && appInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0
                         && !whiteList.contains(packageInfo.packageName)
                     ) {
                         count++
