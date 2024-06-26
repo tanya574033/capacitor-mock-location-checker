@@ -1,13 +1,10 @@
-#import <Foundation/Foundation.h>
-#import <Capacitor/Capacitor.h>
-#import <CoreLocation/CoreLocation.h>
-#import "MockLocationRequest.h"
+#import <UIKit/UIKit.h>
 
-CAP_PLUGIN(MockLocationCheckerPlugin, "MockLocationCheckerPlugin",
-           CAP_PLUGIN_METHOD(isMockLocationEnabled, CAPPluginReturnPromise);
-)
+//! Project version number for Plugin.
+FOUNDATION_EXPORT double PluginVersionNumber;
 
-@interface MockLocationCheckerPlugin : CAPPlugin <CLLocationManagerDelegate>
-@property CLLocationManager *m_locationManager;
-@property NSMutableArray<MockLocationRequest *> *m_requests;
-@end
+//! Project version string for Plugin.
+FOUNDATION_EXPORT const unsigned char PluginVersionString[];
+
+// In this header, you should import all the public headers of your framework using statements like #import <Plugin/PublicHeader.h>
+
