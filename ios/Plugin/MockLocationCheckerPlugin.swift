@@ -1,18 +1,17 @@
 import Foundation
 import Capacitor
 
-/**
- * Please read the Capacitor iOS Plugin Development Guide
- * here: https://capacitorjs.com/docs/plugins/ios
- */
 @objc(MockLocationCheckerPlugin)
 public class MockLocationCheckerPlugin: CAPPlugin {
-    private let implementation = MockLocationChecker()
+    private let mockLocationChecker = MockLocationChecker()
 
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
+    @objc func isMockLocationEnabled(_ call: CAPPluginCall) {
+        mockLocationChecker.checkMockLocation { isMocked in
+            if isMocked {
+                call.resolve(["isLocationMocked": true])
+            } else {
+                call.resolve(["isLocationMocked": false])
+            }
+        }
     }
 }
